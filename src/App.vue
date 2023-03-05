@@ -1,28 +1,46 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-main>
+      <TopBar @search="fSearch"></TopBar>
+      <Catalog :pData="dPost" :pSearch="dSearch"></Catalog>
+      <Footer></Footer>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Catalog from './components/Catalog.vue';
+import Footer from './components/Footer.vue';
+import TopBar from './components/TopBar';
+import axios from 'axios';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    TopBar,
+    Catalog,
+    Footer
+  },
+  data: () => ({
+    dSearch: '',
+    dPost: []
+  }),
+  mounted () {
+    this.fGetData()
+  },
+  methods: {
+    fGetData () {
+      axios.get('https://jsonplaceholder.typicode.com/posts').then(response => {
+        this.dPost = response.data;
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      
+    },
+    fSearch (text) {
+      this.dSearch = text
+    }
   }
-}
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
